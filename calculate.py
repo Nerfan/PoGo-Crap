@@ -41,54 +41,40 @@ class Species():
         """
         Simulates transferring and evolving the max amount possible
         """
-        self.transfer(calculate_equilibrium(
-            self.candy,
-            self.number,
-            self.candyreq
-        ))
-        for i in range(calculate_max_evos(self.candy, self.candyreq)):
+        temp = self.calculate_max_evos()
+        evos = temp[0]
+        transfers = temp[1]
+        self.transfer(transfers)
+        for i in range(evos):
             self.evolve()
+
+    def calculate_max_evos(self):
+        """
+        Calculate the maximum number of evolutions possible
+
+        Returns:
+            tuple (int, int): Maximum number of evolutions possible
+                              Max number of Pokemon to transfer
+        """
+        poketemp = self.number
+        candytemp = self.candy
+        while poketemp > (candytemp-1)//(self.candyreq-1):
+            poketemp -= 1
+            candytemp += 1
+        return (
+            min((candytemp-1)//(self.candyreq-1), poketemp),
+            self.number-poketemp
+            )
 
     def __str__(self):
         return self.name + " " + str(self.number) + " " + str(self.candy)
 
-def calculate_max_evos(candy, candyreq):
-    """
-    Calculate the max number of Pokemon that can be evolved given n candy
-
-    Args:
-        candy (int): Amount of candy in possession
-        candyreq (int): Amount of candy required to evolve a single Pokemon
-
-    Returns:
-        int: Number of pokemon that can be evoled with the given amounts
-    """
-    if candy <= candyreq:
-        return 0
-    evos = 1
-    candy -= candyreq
-    evos += candy//(candyreq-1)
-    return evos
-
-def calculate_equilibrium(candy, pokemon, candyreq):
-    """
-    Calculate how many pokemon should be transferred to achieve max evolutions
-
-    Args:
-        candy (int): Amount of candy in possession
-        pokemon (int): Number of the type of Pokemon in possession
-        candyreq (int): Amount of candy required to evolve a single Pokemon
-
-    Returns:
-        int: Number of pokemon that should be transferred
-    """
-    transfer = 0
-    while pokemon > calculate_max_evos(candy, candyreq):
-        pokemon -= 1
-        candy += 1
-        transfer += 1
-    return transfer
-
-weedle = Species("Weedle", 13, 144, 12)
-weedle.evolve_all()
-print(weedle)
+pokemon = [
+    Species("Weedle", 12, 136, 12),
+    Species("Caterpie", 1, 12, 12),
+    Species("Pidgey", 25, 191, 12),
+    Species("Rattata", 13, 184, 25),
+    Species("Spearow", 5, 107, 50),
+    ]
+for pokemon in pokemon:
+    print(pokemon.calculate_max_evos())
