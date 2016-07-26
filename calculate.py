@@ -54,13 +54,25 @@ class Species():
 
         Returns:
             tuple (int, int): Maximum number of evolutions possible
-                              Max number of Pokemon to transfer
+                              Minimum number of Pokemon to transfer
         """
         poketemp = self.number
         candytemp = self.candy
-        while poketemp > (candytemp-1)//(self.candyreq-1):
-            poketemp -= 1
-            candytemp += 1
+        # Go to the number of candies required for the next evolution
+        # e.g. If we currently have 13 candies for a 12-candy evolution,
+        #      we see if transferring 10 Pokemon would still allow us 2 left
+        currevos = (candytemp-1)//(self.candyreq-1)
+        diff = ((currevos+1) * (self.candyreq-1) + 1) - candytemp
+        if diff != 0 and poketemp - diff >= currevos + 1:
+            poketemp -= diff
+            candytemp += diff
+        # The increments candies and decrements Pokemon by the evolution req
+        while poketemp-(self.candyreq-1) >= (candytemp+10)//(self.candyreq-1):
+            poketemp -= self.candyreq-1
+            candytemp += self.candyreq-1
+        # After that, we are left with the exact number of candies to evolve
+        # the max possible amount of Pokemon.
+        # However many fewer Pokemon we have is the number to transfer
         return (
             min((candytemp-1)//(self.candyreq-1), poketemp),
             self.number-poketemp
@@ -69,12 +81,13 @@ class Species():
     def __str__(self):
         return self.name + " " + str(self.number) + " " + str(self.candy)
 
-pokemon = [
-    Species("Weedle", 12, 136, 12),
+POKEMON = [
+    # Species(Name, number, amount of candy, candy required to evolve one)
+    Species("Weedle", 15, 40, 12),
     Species("Caterpie", 1, 12, 12),
     Species("Pidgey", 25, 191, 12),
     Species("Rattata", 13, 184, 25),
     Species("Spearow", 5, 107, 50),
     ]
-for pokemon in pokemon:
+for pokemon in POKEMON:
     print(pokemon.calculate_max_evos())
