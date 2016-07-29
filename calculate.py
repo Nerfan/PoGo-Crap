@@ -39,7 +39,7 @@ class Species():
 
     def evolve_all(self):
         """
-        Simulates transferring and evolving the max amount possible
+        Simulate transferring and evolving the max amount possible
         """
         temp = self.calculate_max_evos()
         evos = temp[0]
@@ -81,13 +81,46 @@ class Species():
     def __str__(self):
         return self.name + " " + str(self.number) + " " + str(self.candy)
 
-POKEMON = [
-    # Species(Name, number, amount of candy, candy required to evolve one)
-    Species("Weedle", 15, 40, 12),
-    Species("Caterpie", 1, 12, 12),
-    Species("Pidgey", 25, 191, 12),
-    Species("Rattata", 13, 184, 25),
-    Species("Spearow", 5, 107, 50),
-    ]
-for pokemon in POKEMON:
-    print(pokemon.calculate_max_evos())
+def lucky_egg(pokemonlist):
+    """
+    Tell how many more evolutions are needed to completely use up a Lucky Egg
+
+    Args:
+        pokemonlist (list of Species): List of all Species being evolved
+    """
+    required = 60
+    total = 0
+    for pokemon in pokemonlist:
+        temp = pokemon.calculate_max_evos()
+        total += temp[0]
+        if total == 1:
+            print(pokemon.name + ":\n\tTransfer " + str(temp[1]) +
+                  " for a total of " + str(temp[0]) + " evolution.")
+        else:
+            print(pokemon.name + ":\n\tTransfer " + str(temp[1]) +
+                  " for a total of " + str(temp[0]) + " evolutions.")
+    if total >= required:
+        print("No more Pokemon needed! Get to evolving!")
+    else:
+        print("You need " + str(required - total) + " more evolutions.")
+
+def main():
+    """
+    Ask the user for information on their Pokemon and then tell them info
+
+    Loops asking for info until the user gives a blank line.
+    After that, tells the user how many Pokemon they can evolve
+    and how many more are needed for a "full" lucky egg.
+    """
+    pokemon = []
+    while True:
+        name = input("Pokemon name? (blank to end) ")
+        if name.strip() == "":
+            break
+        number = int(input("Currently owned amount of " + name + ": "))
+        candies = int(input("Number of " + name + " candies owned: "))
+        candyreq = int(input("Candies required to evolve one " + name + ": "))
+        pokemon.append(Species(name, number, candies, candyreq))
+    lucky_egg(pokemon)
+
+main()
