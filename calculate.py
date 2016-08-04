@@ -117,7 +117,7 @@ def main():
         name = input("Pokemon name? (blank to end) ")
         if name.strip() == "":
             break
-        number = int(input("Currently owned amount of " + name + ": "))
+        number = int(input("Currently owned number of " + name + ": "))
         candies = int(input("Number of " + name + " candies owned: "))
         candyreq = int(input("Candies required to evolve one " + name + ": "))
         pokemon.append(Species(name, number, candies, candyreq))
