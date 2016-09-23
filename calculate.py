@@ -88,7 +88,7 @@ def lucky_egg(pokemonlist):
     Args:
         pokemonlist (list of Species): List of all Species being evolved
     """
-    required = 60
+    required = 110
     total = 0
     for pokemon in pokemonlist:
         temp = pokemon.calculate_max_evos()
